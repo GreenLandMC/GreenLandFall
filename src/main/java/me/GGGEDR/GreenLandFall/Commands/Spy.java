@@ -13,7 +13,7 @@ public class Spy extends Command {
     public static List<ProxiedPlayer> spyes = new ArrayList<>();
 
     public Spy() {
-        super("spy", "admin.*");
+        super("spy", "admin.spy");
     }
 
     @Override

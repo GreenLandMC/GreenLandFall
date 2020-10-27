@@ -66,5 +66,12 @@
             <version>1.16-R0.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>me.LabyMod.GLMC.API</groupId>
+            <artifactId>LabyMod</artifactId>
+            <version>1.12.2</version>
+            <scope>system</scope>
+            <systemPath>D:/Dev/Java/GreenLandFall/dep/LabyMod-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
