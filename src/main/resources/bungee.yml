@@ -1,4 +1,4 @@
 name: GreenLandFall
 version: ${project.version}
 main: me.GGGEDR.GreenLandFall.Main
-depend: [LabyModAPI]
+depend: [LabyModAPI, Party]

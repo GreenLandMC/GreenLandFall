@@ -4,6 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.GGGEDR.Party.Party;
+import me.GGGEDR.Party.events.onPlayerAddToPartyEvent;
+import me.GGGEDR.Party.events.onPlayerCreatePartyEvent;
+import me.GGGEDR.Party.events.onPlayerLeaveFromPartyEvent;
 import net.labymod.serverapi.bungee.LabyModPlugin;
 import net.labymod.serverapi.bungee.event.LabyModPlayerJoinEvent;
 import net.labymod.serverapi.bungee.event.MessageReceiveEvent;
@@ -36,24 +40,15 @@ public class JoinEvent implements Listener {
     }
 
 
-   /*@EventHandler
+   @EventHandler
     public void onSend(MessageSendEvent e){
-
-        try {
-            System.out.println(e.getJsonElement());
-            if (Contains(e.getJsonElement().toString(), "joinSecret")) {
-                System.out.println(parse(e.getJsonElement().toString(), "joinSecret").split(":play.greenlandmc.eu")[0]);
-                ProxyServer.getInstance().getPlayer(UUID.fromString(parse(e.getJsonElement().toString(), "joinSecret").split(":play.greenlandmc.eu")[0])).sendMessage(new TextComponent("§b§lLabyMode §a§lInviter §8» §7Práve sa k tebe pripája hráč cez tvoju §blabymode §7discord pozvánku"));
-            }
-        } catch (Exception ex){
-
-        }
-    }*/
+        System.out.println(e.getMessageKey() +": ["+ e.getPlayer().getName() +"]"+ e.getJsonElement());
+    }
 
     @EventHandler
     public void onJoin(LabyModPlayerJoinEvent e){
         players.add(e.getPlayer());
-        updateGameInfo(e.getPlayer(), true, "AuthMe", System.currentTimeMillis(), false, 0);
+        updateGameInfo(e.getPlayer(), true, "AuthMe", System.currentTimeMillis(), true, 0);
         setMiddleClickActions(e.getPlayer());
     }
 
@@ -65,12 +60,74 @@ public class JoinEvent implements Listener {
      }
 
     @EventHandler
-    public void ServerChane(ServerSwitchEvent e){
+    public void ServerChange(ServerSwitchEvent e){
         if(players.contains(e.getPlayer())){
-            updateGameInfo(e.getPlayer(), true, e.getPlayer().getServer().getInfo().getName(), System.currentTimeMillis(), true, 1);
-            sendCurrentPlayingGamemode(e.getPlayer(), true, e.getPlayer().getName());
+            updateGameInfo(e.getPlayer(), true, e.getPlayer().getServer().getInfo().getName(), System.currentTimeMillis(), false, 1);
             setMiddleClickActions(e.getPlayer());
+            sendCurrentPlayingGamemode(e.getPlayer(), true, e.getPlayer().getServer().getInfo().getName());
         }
+    }
+
+    @EventHandler
+    public void onPartyCreate(onPlayerCreatePartyEvent e){
+        if(players.contains(e.getOwner())) {
+            System.out.println("called");
+            updatePartyInfo(e.getOwner(), true, e.getOwner().getUniqueId(), e.getPartyGroup().getAmount(), 3);
+        }
+    }
+
+    @EventHandler
+    public void onPartyAdd(onPlayerAddToPartyEvent e){
+        if(players.contains(e.getOwner())) {
+            updatePartyInfo(e.getOwner(), true, e.getOwner().getUniqueId(), Party.getInstance().getAPI().getPartyByPlayer(e.getMember()).getAmount(), 3);
+        }
+    }
+
+    @EventHandler
+    public void onPartyRemove(onPlayerLeaveFromPartyEvent e){
+        if(e.getPartyGroup() != null){
+            if(players.contains(e.getPartyGroup().getOwner())) {
+                updatePartyInfo(e.getPartyGroup().getOwner(), true, e.getPartyGroup().getOwner().getUniqueId(), e.getPartyGroup().getAmount(), 3);
+            }
+        }
+    }
+    public void setPartyInfo(ProxiedPlayer player, int in_party, int max_players, UUID owner_id){
+        String domain = "play.greenlandmc.eu";
+        JsonObject obj = new JsonObject();
+        obj.addProperty( "hasGame", true );
+        obj.addProperty( "hasParty", true );
+        obj.addProperty( "partyId", owner_id.toString() + ":" + domain );
+        obj.addProperty( "party_size", in_party );
+        obj.addProperty( "party_max", max_players );
+        obj.addProperty( "game_mode", player.getServer().getInfo().getName() );
+        obj.addProperty( "game_startTime", System.currentTimeMillis() );
+        LabyModPlugin.getInstance().sendServerMessage( player, "discord_rpc", obj );
+        System.out.println("Packet na nastavanie discord rpc bol odoslanný!");
+    }
+
+
+    private void updatePartyInfo( ProxiedPlayer player, boolean hasParty, UUID partyLeaderUUID, int partySize, int maxPartyMembers ) {
+        String domain = "play.greenlandmc.eu";
+
+        // Create party json object
+        JsonObject obj = new JsonObject();
+        obj.addProperty( "hasParty", hasParty );
+
+        if ( hasParty ) {
+            obj.addProperty( "partyId", partyLeaderUUID.toString() + ":" + domain );
+            obj.addProperty( "party_size", partySize );
+            obj.addProperty( "party_max", maxPartyMembers );
+        }
+
+        // Send to user
+        LabyModPlugin.getInstance().sendServerMessage( player, "discord_rpc", obj );
+    }
+
+    public void removePartyInfo(ProxiedPlayer player){
+        JsonObject obj = new JsonObject();
+        obj.addProperty( "hasParty", false );
+        obj.addProperty( "game_startTime", System.currentTimeMillis() );
+        LabyModPlugin.getInstance().sendServerMessage( player, "discord_rpc", obj );
     }
 
 
@@ -80,22 +137,14 @@ public class JoinEvent implements Listener {
         // Create game json object
         JsonObject obj = new JsonObject();
         obj.addProperty( "hasGame", hasGame );
+        addSecret( obj, "hasMatchSecret", "matchSecret", UUID.randomUUID(), domain );
+        addSecret( obj, "hasSpectateSecret", "spectateSecret", UUID.randomUUID(), domain );
+        addSecret( obj, "hasJoinSecret", "joinSecret", player.getUniqueId(), domain );
+        obj.addProperty( "partyId", player.getUniqueId().toString() + ":" + domain );
 
         if ( hasGame ) {
             obj.addProperty( "game_mode", gamemode );
             obj.addProperty( "game_startTime", startTime ); // Set to 0 for countdown
-        }
-
-        addSecret( obj, "hasMatchSecret", "matchSecret", UUID.randomUUID(), domain );
-        addSecret( obj, "hasSpectateSecret", "spectateSecret", UUID.randomUUID(), domain );
-        addSecret( obj, "hasJoinSecret", "joinSecret", player.getUniqueId(), domain );
-
-        obj.addProperty( "hasParty", hasParty );
-
-        if ( hasParty ) {
-            obj.addProperty( "partyId", player.getUniqueId().toString() + ":" + domain );
-            obj.addProperty( "party_size", inparty );
-            obj.addProperty( "party_max", 3 );
         }
         // Send to user
         LabyModPlugin.getInstance().sendServerMessage( player, "discord_rpc", obj );
@@ -131,7 +180,7 @@ public class JoinEvent implements Listener {
         entry = new JsonObject();
         entry.addProperty( "displayName", "Otvorit štatistiky" );
         entry.addProperty( "type", EnumActionType.CLIPBOARD.name() );
-        entry.addProperty( "value", "https://example.com/stats/{name}" );
+        entry.addProperty( "value", "https://stats.greenlandmc.eu/?player={name}" );
         array.add(entry);
 
         entry = new JsonObject();
