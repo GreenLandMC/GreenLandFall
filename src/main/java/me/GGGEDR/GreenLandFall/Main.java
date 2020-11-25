@@ -26,6 +26,7 @@ public final class Main extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new Spy());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new Server());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new alert());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new discord());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Premium());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinEvent());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Join());
