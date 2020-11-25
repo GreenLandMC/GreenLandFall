@@ -1,7 +1,5 @@
 package me.GGGEDR.GreenLandFall.Logger;
 
-import me.GGGEDR.GreenLandFall.Logger.LogFormater;
-import me.GGGEDR.GreenLandFall.Logger.LoggerCache;
 import me.GGGEDR.GreenLandFall.Main;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;

@@ -12,7 +12,6 @@ import net.labymod.serverapi.bungee.LabyModPlugin;
 import net.labymod.serverapi.bungee.event.LabyModPlayerJoinEvent;
 import net.labymod.serverapi.bungee.event.MessageReceiveEvent;
 import net.labymod.serverapi.bungee.event.MessageSendEvent;
-import net.labymod.serverapi.bungee.listener.PluginMessageListener;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
