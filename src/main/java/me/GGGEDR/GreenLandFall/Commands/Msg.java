@@ -1,5 +1,6 @@
 package me.GGGEDR.GreenLandFall.Commands;
 
+import me.GGGEDR.GreenLandFall.Logger.LoggerCache;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,8 +28,10 @@ public class Msg extends Command {
                             sprava = sprava +" "+ args[i];
                         }
                     }
-                    sender.sendMessage(new TextComponent("§2§lMsg §8» §7[§a§lYOU §8» §f"+ args[0] +"§7] §f"+ sprava));
+                    sender.sendMessage(new TextComponent("§2§lMsg §8» §7[§a§lYOU §8» §f"+ ProxyServer.getInstance().getPlayer(args[0]).getName() +"§7] §f"+ sprava));
                     ProxyServer.getInstance().getPlayer(args[0]).sendMessage(new TextComponent("§2§lMsg §8» §7[§f"+ sender.getName() +" §8» §a§lYOU§7] §f"+ sprava));
+                    LoggerCache.cache.get((ProxiedPlayer) sender).info("[(Private) You -> "+ ProxyServer.getInstance().getPlayer(args[0]).getName() +"] » "+ sprava);
+                    LoggerCache.cache.get(ProxyServer.getInstance().getPlayer(args[0])).info("[(Private) "+ sender.getName() +" -> You] » "+ sprava);
                     if(!Spy.spyes.isEmpty()){
                         for(ProxiedPlayer player : Spy.spyes){
                             if(ProxyServer.getInstance().getPlayer(player.getName()) != null){
