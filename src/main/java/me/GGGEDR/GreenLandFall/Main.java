@@ -2,8 +2,8 @@ package me.GGGEDR.GreenLandFall;
 
 import me.GGGEDR.GreenLandFall.Commands.*;
 import me.GGGEDR.GreenLandFall.LabyMod.JoinEvent;
-import me.GGGEDR.GreenLandFall.Logger.Join;
 import me.GGGEDR.GreenLandFall.Listeners.Premium;
+import me.GGGEDR.GreenLandFall.Logger.LoggerJoin;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -30,7 +30,7 @@ public final class Main extends Plugin {
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new web());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new Premium());
         ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinEvent());
-        ProxyServer.getInstance().getPluginManager().registerListener(this, new Join());
+        ProxyServer.getInstance().getPluginManager().registerListener(this, new LoggerJoin());
     }
 
     @Override

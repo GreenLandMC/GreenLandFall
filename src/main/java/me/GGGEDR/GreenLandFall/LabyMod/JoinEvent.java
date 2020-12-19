@@ -4,10 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.GGGEDR.Party.Party;
-import me.GGGEDR.Party.events.onPlayerAddToPartyEvent;
-import me.GGGEDR.Party.events.onPlayerCreatePartyEvent;
-import me.GGGEDR.Party.events.onPlayerLeaveFromPartyEvent;
 import net.labymod.serverapi.bungee.LabyModPlugin;
 import net.labymod.serverapi.bungee.event.LabyModPlayerJoinEvent;
 import net.labymod.serverapi.bungee.event.MessageReceiveEvent;
@@ -67,29 +63,6 @@ public class JoinEvent implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPartyCreate(onPlayerCreatePartyEvent e){
-        if(players.contains(e.getOwner())) {
-            System.out.println("called");
-            updatePartyInfo(e.getOwner(), true, e.getOwner().getUniqueId(), e.getPartyGroup().getAmount(), 3);
-        }
-    }
-
-    @EventHandler
-    public void onPartyAdd(onPlayerAddToPartyEvent e){
-        if(players.contains(e.getOwner())) {
-            updatePartyInfo(e.getOwner(), true, e.getOwner().getUniqueId(), Party.getInstance().getAPI().getPartyByPlayer(e.getMember()).getAmount(), 3);
-        }
-    }
-
-    @EventHandler
-    public void onPartyRemove(onPlayerLeaveFromPartyEvent e){
-        if(e.getPartyGroup() != null){
-            if(players.contains(e.getPartyGroup().getOwner())) {
-                updatePartyInfo(e.getPartyGroup().getOwner(), true, e.getPartyGroup().getOwner().getUniqueId(), e.getPartyGroup().getAmount(), 3);
-            }
-        }
-    }
     public void setPartyInfo(ProxiedPlayer player, int in_party, int max_players, UUID owner_id){
         String domain = "play.greenlandmc.eu";
         JsonObject obj = new JsonObject();

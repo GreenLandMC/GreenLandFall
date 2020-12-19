@@ -73,12 +73,5 @@
             <scope>system</scope>
             <systemPath>D:/Dev/Java/GreenLandFall/dep/LabyMod-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>me.GGGEDR.Party</groupId>
-            <artifactId>Party</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>D:/Dev/Java/GreenLandFall/dep/Party.jar</systemPath>
-        </dependency>
     </dependencies>
 </project>

@@ -13,18 +13,18 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-public class Join implements Listener {
+public class LoggerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PostLoginEvent e){
-        File player_file = new File(Main.getInstance().getDataFolder() +"/logy/GGGEDR/");
+        File player_file = new File(Main.getInstance().getDataFolder() +"/logy/"+ e.getPlayer().getName() +"/");
         if(!player_file.exists()){
             player_file.mkdirs();
         }
         Logger logger = Logger.getLogger(e.getPlayer().getName());
         FileHandler fh;
         try {
-            fh = new FileHandler(Main.getInstance().getDataFolder() +"/logy/GGGEDR/"+ e.getPlayer().getUniqueId() +".log");
+            fh = new FileHandler(Main.getInstance().getDataFolder() +"/logy/"+ e.getPlayer().getName() +"/"+ e.getPlayer().getUniqueId() +".log");
             logger.addHandler(fh);
             fh.setFormatter(new LogFormater());
             logger.setUseParentHandlers(false);
