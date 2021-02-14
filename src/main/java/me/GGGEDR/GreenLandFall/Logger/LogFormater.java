@@ -6,7 +6,6 @@ import java.util.logging.SimpleFormatter;
 public class LogFormater extends SimpleFormatter {
 
     @Override
-
     public synchronized String format(LogRecord record){
 
         record.setSourceClassName(LogFormater.class .getName());
